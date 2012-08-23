@@ -17,12 +17,26 @@ $base-font-size:    1em !default;
 $base-line-height:  1.5em !default;
 
 /*
+    Adjust a unit to be relative if in PX to allow for arithmetic
+*/
+@function relative-font-size($font-size:$base-font-size) {
+    @if unit($font-size) == px {
+        $font-size:$font-size / $base-font-size * 1em;
+    }
+    @return $font-size;
+}
+
+/*
     Initialize the rhythm
 */
-body{
-    font-size:$base-font-size;
-    line-height:$base-line-height;
+// Establishes a font baseline for the given font-size.
+@mixin establish-baseline($font-size: $base-font-size) {
+  html, body {
+    font-size: $font-size;
+    line-height:relative-font-size($base-line-height);
+  }
 }
+
 
 /*
     Return a rhythm
@@ -47,10 +61,11 @@ body{
         number $font-size   : font size, in ems
 */
 @function px-rhythm($width:1,$font-size:1em){
+    // $relative-base-font-size: relative-font-size($base-font-size);
     @if unit($width) == px {
         $width:$width / 1px;
     }
-    @return $width * 0.0625 / $base-font-size / $font-size * 1em * 1em * 1em;
+    @return $width * 0.0625 / relative-font-size($base-font-size) / relative-font-size($font-size) * 1em * 1em * 1em;
 }
 
 /*
@@ -76,7 +91,7 @@ body{
                                   Useful to substract borders from the whitespace to not break the rhythm
 */
 @mixin margin($lines:1,$font-size:1em,$border-width:0){
-    margin:rhythm($lines,$font-size) - px-rhythm($border-width,$font-size);
+    margin:relative-font-size(rhythm($lines,$font-size)) - px-rhythm($border-width,$font-size);
 }
 
 /*
@@ -89,7 +104,7 @@ body{
                                   Useful to substract borders from the whitespace to not break the rhythm
 */
 @mixin margin-top($lines:1,$font-size:1em,$border-width:0){
-    margin-top:rhythm($lines,$font-size) - px-rhythm($border-width,$font-size);
+    margin-top:relative-font-size(rhythm($lines,$font-size)) - px-rhythm($border-width,$font-size);
 }
 
 /*
@@ -102,7 +117,7 @@ body{
                                   Useful to substract borders from the whitespace to not break the rhythm
 */
 @mixin margin-bottom($lines:1,$font-size:1em,$border-width:0){
-    margin-bottom:rhythm($lines,$font-size) - px-rhythm($border-width,$font-size);
+    margin-bottom:relative-font-size(rhythm($lines,$font-size)) - px-rhythm($border-width,$font-size);
 }
 
 /*
@@ -115,7 +130,7 @@ body{
                                   Useful to substract borders from the whitespace to not break the rhythm
 */
 @mixin padding($lines:1,$font-size:1em,$border-width:0){
-    padding:rhythm($lines,$font-size) - px-rhythm($border-width,$font-size);
+    padding:relative-font-size(rhythm($lines,$font-size)) - px-rhythm($border-width,$font-size);
 }
 
 /*
@@ -128,7 +143,7 @@ body{
                                   Useful to substract borders from the whitespace to not break the rhythm
 */
 @mixin padding-top($lines:1,$font-size:1em,$border-width:0){
-    padding-top:rhythm($lines,$font-size) - px-rhythm($border-width,$font-size);
+    padding-top:relative-font-size(rhythm($lines,$font-size)) - px-rhythm($border-width,$font-size);
 }
 
 /*
@@ -141,7 +156,7 @@ body{
                                   Useful to substract borders from the whitespace to not break the rhythm
 */
 @mixin padding-bottom($lines:1,$font-size:1em,$border-width:0){
-    padding-bottom:rhythm($lines,$font-size) - px-rhythm($border-width,$font-size);
+    padding-bottom:relative-font-size(rhythm($lines,$font-size)) - px-rhythm($border-width,$font-size);
 }
 
 /*
